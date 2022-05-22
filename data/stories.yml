@@ -1,0 +1,26 @@
+version: "3.1"
+
+# stories:
+
+# - story: main-path-risk
+#   steps: 
+#   - intent: greet
+#   - action: utter_welcome-greet
+#   - action: utter_disclaimer
+#   - action: utter_age
+#   - intent: inform_age
+#   - action: utter_gender
+#   - intent: inform_gender 
+#   - action: utter_height 
+#   - intent: inform_height
+#   - action: utter_weight 
+#   - intent: inform_weight
+  #- action: calculate_bmi
+  #- action: utter_smoking
+  #- intent: inform_smoking
+  #- action: utter_alco
+  #- intent: inform_alco
+  #- action: utter_pe
+  #- intent: inform_pe
+  #- action: calculate_risk 
+

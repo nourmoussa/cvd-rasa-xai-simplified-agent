@@ -1,0 +1,283 @@
+version: "3.0"
+# with rasa 3.0.4
+# pip install sanic==21.9.3
+# sanic                   21.6.0
+# Sanic-Cors              1.0.0
+# sanic-jwt               1.7.0
+# sanic-plugin-toolkit    1.2.0
+# Sanic-Plugins-Framework 0.9.5
+# sanic-routing           0.7.0
+
+intents:
+- risk_assess
+- say_name
+- goodbye
+- affirm
+- deny
+- mood_great
+- mood_unhappy
+- ask_name
+# risk factors
+- Woman
+- Man
+- ask_age
+- age
+#- diagnosed_over_6months
+- affirm_s
+- deny_s
+- affirm_a
+- deny_a
+- affirm_r
+- deny_r
+- affirm_pe
+- deny_pe
+- ask_weight
+- ask_height
+- weight
+- height
+- bmi
+# chitchat
+- bot_challenge
+- greet
+
+
+entities:
+- gender
+- age
+- alco
+- smoke
+- daily_activity
+- height
+- weight
+- motivation
+- health
+- PERSON           # entity extracted by SpacyEntityExtractor
+
+actions:
+  - risk_assessment
+  - risk_management
+ # - validate_simple_risk_form
+  - action_set_height
+  - action_set_weight
+  - action_calculate_bmi
+
+
+forms:
+  simple_risk_form:
+    required_slots:
+        - gender
+        - age
+        - alco
+        - smoke
+        - daily_activity
+        - height
+        - weight  
+  
+  bmi_form:
+    required_slots: 
+       - weight
+       - height
+
+slots:
+  gender:
+    type: categorical
+    mappings: 
+    - type: from_intent
+      value: Man
+      intent: Man
+    - type: from_intent
+      value: Woman
+      intent: Woman
+
+  alco:
+    type: categorical
+    mappings: 
+    - type: from_intent
+      value: alco_affirm
+      intent: affirm_a
+    - type: from_intent
+      value: alco_deny
+      intent: deny_a 
+
+  age:
+    type: float
+    min_value: 12
+    max_value: 100
+    mappings: 
+    - type: from_entity
+      influence_conversation: true
+      #value: age
+      entity: age
+      intent: ask_age
+      not_intent: ask_weight & ask_height
+  
+  smoke:
+    type: categorical
+    mappings: 
+    - type: from_intent
+      value: smoke_affirm
+      intent: affirm_s
+    - type: from_intent
+      value: smoke_deny
+      intent: deny_s  
+
+  daily_activity:
+    type: categorical
+    mappings: 
+    - type: from_intent
+      value: pe_affirm
+      intent: affirm_pe
+    - type: from_intent
+      value: pe_deny
+      intent: deny_pe  
+  
+  height:
+    type: float
+    min_value: 0
+    max_value: 3
+    mappings: 
+    - type: from_entity
+      influence_conversation: true
+     #value: height
+      entity: height
+      intent: ask_height 
+      not_intent: ask_weight & ask_age
+
+  weight:
+    type: float
+    min_value: 30
+    max_value: 200
+    mappings: 
+    - type: from_entity
+      influence_conversation: true
+      #value: weight
+      entity: weight
+      intent: ask_weight
+      not_intent: ask_height & ask_age
+  
+  PERSON:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: PERSON
+
+responses:
+  utter_ask_age:
+    - text: I am going to start my assessment by asking you about your age. Did you know that age as it is directly correlated to cardiovascular risks. How old are you? (e.g. 30 years old)
+
+  utter_welcome-greet:
+    - text: "Hello! I am your cardiovascular agent and I am here to help you uncover potential health risks and manage your lifestyle accordingly."
+
+  utter_disclaimer:
+    - text: "Please note that this assessment is not intended or implied to be a substitute for professional medical advice, diagnosis or treatment."
+ 
+  utter_ask_gender:
+    - text: Thank you for your answer! Now could you please tell me which gender do you identify with? (Man/Woman) This data will be collected to give you a personalized experience and accurate results.
+      buttons:
+      - title: "Man"
+        payload: "/Man"
+      - title: "Woman"
+        payload: "/Woman"
+  
+  utter_ask_alco:
+    - text: Your alcohol consumption can have an effect on your cardiovascular health. Therefore I would like to ask you whether you usually consume alcohol more than once per week?.
+      buttons:
+      - title: "Yes"
+        payload: "/affirm_a"
+      - title: "No"
+        payload: "/deny_a"
+
+  utter_ask_smoke:
+    - text: Your day to day activities can have a direct effect on your cardiovascular health. Therefore, I would like to ask you whether you smoke or not?
+      buttons:
+      - title: "Yes"
+        payload: "/affirm_s"
+      - title: "No"
+        payload: "/deny_s"
+
+  utter_ask_daily_activity:
+    - text: Another habit I would like to discuss is physical activity. Do you consider yourself physically active?
+      buttons:
+      - title: "Yes"
+        payload: "/affirm_pe"
+      - title: "No"
+        payload: "/deny_pe"
+
+  utter_ask_height:
+    - text: The next thing I need from you to input in order to calculate your BMI is your height. Could you please type in your height (m)?
+
+  utter_ask_weight:
+    - text: How much do you weigh? (enter digits in kg, e.g. 60 kg)
+
+  utter_submit:
+    - text: Great, thanks
+
+  utter_submit_risk:
+    - text: Thank you, I will use your inputs to calculate your cardiovascular risk. 
+
+  utter_ask_continue:
+    - text: Are you sure you want to stop the form?
+
+  utter_welcome_name:
+    - text: Nice to meet you {PERSON}
+
+  utter_risk_slots:
+    - text: We calculate the risk based on your inputs such as; that you were born as a {gender} and you are {age} years old. You {smoke} and {alco}. You measure {height} cm and you weigh {weight} kg. 
+
+  utter_risk_result:
+    - text: Sorry, I am not yet ready to give you the risk value. 
+
+  utter_bmi:
+    - text: Based on your inputs, you measure {height} cm and your weight is {weight} kg. Therefore your bmi is equal to 
+
+
+  utter_greet:
+    - text: Hey! How are you?
+
+  utter_cheer_up:
+    - text: "Here is something to cheer you up:"
+      image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+    - text: Did that help you?
+
+  utter_happy:
+    - text: "Great, carry on!"
+
+  utter_goodbye:
+    - text: "Bye"
+
+  utter_iamabot:
+    - text: "I am a bot, powered by Rasa."
+
+  utter_mynameis_Asthma:
+    - text: "I am currently called Asthma Shield, but this is likely to change. I have been created by a team at Imperial College London, with funding from the EPSRC"
+
+  utter_unhappy_reflect:
+    - text: "So you have been unwell"
+
+  utter_ask_why:
+    - text: "Could you tell me why you feel this way?"
+
+  utter_ask_strategy_unhappy:
+    - text: "Do you have strategies for helping with this?"
+
+  utter_offer_strategy_resources:
+    - text: "Would you like some help finding better strategies?"
+
+  utter_will_seek_help:
+    - text: "Sorry, I am not yet able to offer help on this. But in the meantime you can find great resources at https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)"
+
+  utter_default:
+    - text: "Sorry, I didn't get that, can you rephrase?"
+
+  utter_wants_manage:
+    - text: "Would you like to learn how you could reduce your risk?"
+
+  utter_chitchat:
+    - text: say default
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

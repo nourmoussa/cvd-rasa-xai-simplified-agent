@@ -1,0 +1,46 @@
+version: "3.1"
+
+rules:
+- rule: Activate risk form
+  steps:
+  - intent: greet
+  - action: utter_welcome-greet
+  - action: utter_disclaimer
+  - action: simple_risk_form
+  - active_loop: simple_risk_form
+
+- rule: Submit risk calculation
+  condition:
+  - active_loop: simple_risk_form
+  steps:
+  - action: simple_risk_form
+  - slot_was_set: 
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit_risk
+  - action: utter_risk_slots
+  - action: risk_assessment
+  - action: action_set_height
+  - action: action_set_weight
+  - action: action_calculate_bmi
+  #- action: utter_bmi
+  #management
+  - action: utter_wants_manage
+  - intent: affirm
+  - action: risk_management
+
+# - rule: Say goodbye anytime the user says goodbye
+#   steps:
+#   - intent: goodbye
+#   - action: utter_goodbye
+
+# - rule: Say 'I am a bot' anytime the user challenges
+#   steps:
+#   - intent: bot_challenge
+#   - action: utter_iamabot
+
+# - rule: Activate form
+#   steps:
+#   - intent: inform_pe
+#   - action: calculate_risk
+#   - active_loop: calculate_risk

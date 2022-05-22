@@ -1,0 +1,171 @@
+version: "3.0"
+
+nlu:
+# Asthma Risk calculation
+- intent: risk_assess
+  examples: |
+    - risk
+    - calculate my risk
+    - what are my chances of having an attack?
+    - what are my chances of having a heart attack?
+    - will my CVD get worst?
+    - what is my cardio risk?
+
+- intent: inform_engagement  
+  examples: |
+    - I'd like to manage my [risk](motivation) of [asthma](health)
+    - I'd like to improve my [fitness](health)
+    - I want/should/would do more (exercise)(motivation)
+    - I want/should/would loose/gain (weight)(motivation)
+    - I have/have had trouble (breathing)[health]
+    - I would like to remember to take the [preventer](health)
+
+#- intent: inform_focusing  
+#   examples:|
+#     - I'd like to reduce my [risk](motivation) of [asthma](health)
+#     - 
+
+- intent: say_name
+# eventually generalise with Spacy https://learning.rasa.com/conversational-ai-with-rasa/entities/
+  examples: |
+    - my name is ["PERSON"]{"entity":"PERSON"}
+    - my name is [nour]{"entity":"PERSON"}
+    - my name is [rafa]{"entity":"PERSON"}
+    - my name is [mary]{"entity":"PERSON"}
+    - my name is [john]{"entity":"PERSON"}
+    - my name is [dorian]{"entity":"PERSON"}
+    - I am called [peter](PERSON)
+    - I am called [rafael](PERSON)
+    - I am called [mary](PERSON)
+    - I am called [john](PERSON)
+    - I am called [dorian](PERSON)
+    - You can call me [peter](PERSON)
+    - You can call me [rafael](PERSON)
+    - You can call me [mary](PERSON)
+    - You can call me [john](PERSON)
+    - You can call me [janet](PERSON)
+    - I am ["PERSON"]{"entity":"PERSON"}
+  
+
+
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+    - bonjour 
+    - bonsoir 
+    - Hi 
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+    - yes, please
+    - I would be grateful
+    - sure
+    - great
+    - oui
+    - perfect
+    - ok
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+
+- intent: mood_great
+  examples: |
+    - perfect
+    - great
+    - amazing
+    - feeling like a king
+    - wonderful
+    - I am feeling very good
+    - I am great
+    - I am amazing
+    - I am going to save the world
+    - super stoked
+    - extremely good
+    - so so perfect
+    - so good
+    - so perfect
+
+- intent: mood_unhappy
+  examples: |
+    - my day was horrible
+    - I am sad
+    - I don't feel very well
+    - I am disappointed
+    - super sad
+    - I'm so sad
+    - sad
+    - very sad
+    - unhappy
+    - not good
+    - not very good
+    - extremly sad
+    - so saad
+    - so sad
+
+- intent: ask_name
+  examples: |
+    - What is your name?
+    - May I know your name?
+    - What do people call you?
+    - Do you have a name for yourself?
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+
+- intent: ask_age 
+  examples: |
+    - I am [20]{"entity":"age"} years old
+    - [55]{"entity":"age"} years
+    - [30]{"entity":"age"}
+    - [40]{"entity":"age"}
+    - [60]{"entity":"age"} years
+    - [55](age) years
+    - [30](age)
+
+- intent: ask_height 
+  examples: |
+    - my height is [1.8]{"entity":"height"} m
+    - I measure [1.5]{"entity":"height"} m
+    - [1.75]{"entity":"height"} m
+    - [1.82](height) m 
+    - [1.9](height)
+    - [1.60](height)
+
+- intent: ask_weight
+  examples: |
+    - my weight is [50]{"entity":"weight"} kg
+    - I weigh [75]{"entity":"weight"} kg
+    - [80]{"entity":"weight"} kg
+    - [80]{"entity":"weight"}
+    - [77](weight) kg
+    - [52](weight)
+
