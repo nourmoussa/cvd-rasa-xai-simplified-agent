@@ -1,13 +1,20 @@
 version: "3.1"
 
 # stories:
-
+  
 # - story: main-path-risk
 #   steps: 
 #   - intent: greet
 #   - action: utter_welcome-greet
 #   - action: utter_disclaimer
-#   - action: utter_age
+#   # - action: simple_risk_form
+#   - active_loop: simple_risk_form
+#   - active_loop: null
+#   - action: utter_weight
+#   - action: utter_height
+#   - action: calculate_bmi
+
+# #   - action: utter_age
 #   - intent: inform_age
 #   - action: utter_gender
 #   - intent: inform_gender 

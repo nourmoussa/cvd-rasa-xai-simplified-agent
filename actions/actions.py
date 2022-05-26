@@ -29,9 +29,10 @@
 
 import time
 from typing import Any, Text, Dict, List
-from rasa_sdk import Action, Tracker
+from rasa_sdk import Action, Tracker, FormValidationAction
 from rasa_sdk.events import SlotSet
 from rasa_sdk.executor import CollectingDispatcher
+import requests
 
 # This will be replaced with a representation of risks for different slot values
 # todo: should include text for naming, is it addressable, and map to a live domain (to connect to a motivation type)
@@ -66,41 +67,51 @@ sleep_time = 0.5 # not woking when in loop, it flushes all messages together
 
 factor_slots = ["gender", "alco", "age", "smoke", "daily_activity", "height", "weight"]
 
-# class RiskAssessment(Action):
+class RiskAssessment(Action):
 
-#     def name(self) -> Text:
-#         return "risk_assessment"
+    def name(self) -> Text:
+        return "action_risk_assessment"
 
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        try:
+            url = 'http://127.0.0.1:5000/auth/login/'
+            r = requests.post(url, json={"age":tracker.get_slot("age"),"gender":tracker.get_slot("gender"),"height":tracker.get_slot("height"),"weight":tracker.get_slot("weight"),"smoke":tracker.get_slot("smoke"),"alco":tracker.get_slot("alco"),"active":tracker.get_slot("active")})   
+            dispatcher.utter_message(text="r")
+        except: 
+            dispatcher.utter_message(text="error")
+            return []
+#        r = requests.post(url, json={"age":factor_slots["age"],"gender":factor_slots["gender"],"height":factor_slots["height"],"weight":factor_slots["weight"],"smoke":factor_slots["smoke"],"alco":factor_slots["alco"],"active":factor_slots["active"]})  
+        # r = requests.post(url, json={"age":factor_slots.age,"gender":factor_slots.gender,"height":factor_slots.height,"weight":factor_slots.weight,"smoke":factor_slots.smoke,"alco":factor_slots.alco,"active":factor_slots.active}) 
 
-#         # print(risk_db.keys()) 
-#         Risk = 0.0
-#         factor_risk = 0.0
-#         # slots to be processed (others may not be used here)
-#         # All slots should have been filled
 
-#         for x in factor_slots:
-#             factor_key = tracker.get_slot(x)
-#             print("key: ",factor_key)
-#             dict = risk_db[factor_key]
-#             print("dict", dict)
-#             factor_risk = dict[1]
-#             Risk = Risk +  factor_risk
-#             factor_explain = dict[2]
-#             factor_type = dict[3]
-#             if factor_type == "environmental" or "management":
-#                 if factor_risk > 0.0:
-#                     print("{factor_explain} adds {factor_risk} to your total risk ") 
-#             # add all types of risks        
-#             Risk = Risk +  factor_risk
-#        # todo: have many varaibles and finish with the coding assessment formula 
-#         msg = f"Your total risk is {Risk}. You might be able to reduce it"
-#         dispatcher.utter_message(text=msg)  
-#         # This could be followed in the rule/story by an offer to discuss ways to reduce it
+    #     # print(risk_db.keys()) 
+    #     Risk = 0.0
+    #     factor_risk = 0.0
+    #     # slots to be processed (others may not be used here)
+    #     # All slots should have been filled
 
-#         return []
+    #     for x in factor_slots:
+    #         factor_key = tracker.get_slot(x)
+    #         print("key: ",factor_key)
+    #         dict = risk_db[factor_key]
+    #         print("dict", dict)
+    #         factor_risk = dict[1]
+    #         Risk = Risk +  factor_risk
+    #         factor_explain = dict[2]
+    #         factor_type = dict[3]
+    #         if factor_type == "environmental" or "management":
+    #             if factor_risk > 0.0:
+    #                 print("{factor_explain} adds {factor_risk} to your total risk ") 
+    #         # add all types of risks        
+    #         Risk = Risk +  factor_risk
+    #    # todo: have many varaibles and finish with the coding assessment formula 
+    #     msg = f"Your total risk is {Risk}. You might be able to reduce it"
+    #     dispatcher.utter_message(text=msg)  
+    #     # This could be followed in the rule/story by an offer to discuss ways to reduce it
+
+        # return []
 
 # # describes what factors the person could change
 # class RiskManagement(Action):
@@ -138,10 +149,10 @@ factor_slots = ["gender", "alco", "age", "smoke", "daily_activity", "height", "w
 
 #         return []
 
-# def slow_response (msg, dispatcher: CollectingDispatcher):
-#     time.sleep(sleep_time)
-#     dispatcher.utter_message(text=msg) 
-#     return []
+def slow_response (msg, dispatcher: CollectingDispatcher):
+    time.sleep(sleep_time)
+    dispatcher.utter_message(text=msg) 
+    return []
 
 #age 
 class ActionReceiveAge(Action):
@@ -200,21 +211,21 @@ def bmi_calculation(weight, height):
 
 def get_bmi_status(bmi):
     if bmi < 15:
-       return  "Very severely underweight"
+       return  "Unfortunately, you fall into the severely underweight percentile."
     elif bmi >= 15 and bmi <16:
         return "Severely underweight"
     elif bmi >=16 and bmi < 18.5:
         return "Underweight"
     elif bmi >= 18.5 and bmi < 25: 
-        return "Normal (healthy weight)"
+        return "Good news! You fall into the normal healthy BMI percentile."
     elif  bmi >= 25 and bmi <30:
-        return "Overweight"
+        return "Unfortunately, you fall into the overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
     elif bmi>= 30 and bmi <35:
-        return "Moderately obese"
-    elif bmi >= 35 and bmi <40:
-        return "Severely obese"
+        return "Unfortunately, you fall into the moderately obese percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
+    # elif bmi >= 35 and bmi <40:
+    #     return "Unfortunately, you fall into the severely overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
     else:
-        return "Very severely obese"
+        return "Unfortunately, you fall into the severely overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
 
 
 class CalculeteBMI(Action):
@@ -232,7 +243,7 @@ class CalculeteBMI(Action):
             print(weight)
             bmi = bmi_calculation(weight, height)
             bmi_status = get_bmi_status(bmi)
-            dispatcher.utter_message(text="Your BMI is: "+ str(round(bmi, 2))+" and it is "+ bmi_status)
+            dispatcher.utter_message(text="Your BMI is: "+ str(round(bmi, 2))+ ". " + bmi_status)
         except:
             dispatcher.utter_message(text="Error Occur!")
             return []
