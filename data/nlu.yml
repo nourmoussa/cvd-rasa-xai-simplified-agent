@@ -159,6 +159,9 @@ nlu:
     - [1.82](height) m 
     - [1.9](height)
     - [1.60](height)
+    - [1.54](height)m
+    - [1.77](height)meters
+    - [1.84](height)METERS
 
 - intent: ask_weight
   examples: |
@@ -166,6 +169,10 @@ nlu:
     - I weigh [75]{"entity":"weight"} kg
     - [80]{"entity":"weight"} kg
     - [80]{"entity":"weight"}
-    - [77](weight) kg
+    - [77](weight) Kg
     - [52](weight)
+    - [100](weight)kg
+    - [63](weight)KG
+    - [63](weight) Killograms
+
 
