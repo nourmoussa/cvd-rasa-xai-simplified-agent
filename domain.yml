@@ -48,10 +48,12 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      value: Man
+      # value: Man
+      value: 0
       intent: Man
     - type: from_intent
-      value: Woman
+      # value: Woman
+      value: 1
       intent: Woman
     values: []
   alco:
@@ -59,10 +61,12 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      value: alco_affirm
+      # value: alco_affirm
+      value: 1
       intent: affirm_a
     - type: from_intent
-      value: alco_deny
+      # value: alco_deny
+      value: 0
       intent: deny_a
     values: []
   age:
@@ -81,10 +85,12 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      value: smoke_affirm
+      # value: smoke_affirm
+      value: 1
       intent: affirm_s
     - type: from_intent
-      value: smoke_deny
+      # value: smoke_deny
+      value: 0
       intent: deny_s
     values: []
   daily_activity:
@@ -92,10 +98,12 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      value: pe_affirm
+      # value: pe_affirm
+      value: 1
       intent: affirm_pe
     - type: from_intent
-      value: pe_deny
+      # value: pe_deny
+      value: 0
       intent: deny_pe
     values: []
   height:
@@ -223,9 +231,9 @@ responses:
   utter_manageweight2:
   - text: Small changes (like swapping sugary drinks for water or ditching sugar from your tea) can make a big difference in the long term. If you are interested, you can download thee free NHS plan using this link https://www.nhs.uk/better-health/lose-weight/
   utter_managesmoke:
-  - text: 
+  - text: xxx
   utter_manageactive:
-  - text: 
+  - text: xxx
   utter_ask_managealco: 
   - text: Consuming alcohol can be enjoyable on a night out, but be mindful of your consumption. Are you interested to know how your alcohol consumption affects your cardiovascular risk?
   utter_managealco1:

@@ -33,6 +33,7 @@ from rasa_sdk import Action, Tracker, FormValidationAction
 from rasa_sdk.events import SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 import requests
+import json
 
 # This will be replaced with a representation of risks for different slot values
 # todo: should include text for naming, is it addressable, and map to a live domain (to connect to a motivation type)
@@ -75,15 +76,66 @@ class RiskAssessment(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
         try:
-            url = 'http://127.0.0.1:5000/auth/login/'
-            r = requests.post(url, json={"age":tracker.get_slot("age"),"gender":tracker.get_slot("gender"),"height":tracker.get_slot("height"),"weight":tracker.get_slot("weight"),"smoke":tracker.get_slot("smoke"),"alco":tracker.get_slot("alco"),"active":tracker.get_slot("active")})   
-            dispatcher.utter_message(text="r")
+            url = 'http://127.0.0.1:5000'
+            payload = json.dumps({
+                # "age": int(tracker.get_slot("age")),
+                "age":tracker.get_slot("age"),
+                "gender": int(tracker.get_slot("gender")),
+                "height": tracker.get_slot("height"),
+                "weight": tracker.get_slot("weight"),
+                "smoke": int(tracker.get_slot("smoke")),
+                "alco": int(tracker.get_slot("alco")),
+                "active": int(tracker.get_slot("daily_activity"))
+                })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("POST", url, headers=headers, data=payload)
+            result=response.json()
+            if result["result"]==1:
+                dispatcher.utter_message(text="you have cardio problems")
+            elif result["result"] == 0:
+                dispatcher.utter_message(text="you are healthy")  
+            
         except: 
             dispatcher.utter_message(text="error")
             return []
-#        r = requests.post(url, json={"age":factor_slots["age"],"gender":factor_slots["gender"],"height":factor_slots["height"],"weight":factor_slots["weight"],"smoke":factor_slots["smoke"],"alco":factor_slots["alco"],"active":factor_slots["active"]})  
-        # r = requests.post(url, json={"age":factor_slots.age,"gender":factor_slots.gender,"height":factor_slots.height,"weight":factor_slots.weight,"smoke":factor_slots.smoke,"alco":factor_slots.alco,"active":factor_slots.active}) 
+        #     r = requests.post(url, json={"age":tracker.get_slot("age"),"gender":tracker.get_slot("gender"),"height":tracker.get_slot("height"),"weight":tracker.get_slot("weight"),"smoke":tracker.get_slot("smoke"),"alco":tracker.get_slot("alco"),"active":tracker.get_slot("active")})   
+        #     dispatcher.utter_message(text="r")
+        # except: 
+        #     dispatcher.utter_message(text="error")
+        #     return []
+            # dispatcher.utter_message(text="test")
+
+            # url = "http://127.0.0.1:5000"
+
+            # payload = json.dumps({
+
+            # "age": int(tracker.get_slot("age")),
+
+            # "gender": int(tracker.get_slot("gender")),
+
+            # "height": int(tracker.get_slot("height")),
+
+            # "weight": int(tracker.get_slot("weight")),
+
+            # "smoke": int(tracker.get_slot("smoke")),
+
+            # "alco": int(tracker.get_slot("alco")),
+
+            # "active": int(tracker.get_slot("active"))
+            # })
+
+            # headers = {
+
+            # 'Content-Type': 'application/json'
+            # }
+
+            # response = requests.request("POST", url, headers=headers, data=payload)
+            # dispatcher.utter_message(text=response.text)
 
 
     #     # print(risk_db.keys()) 
