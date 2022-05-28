@@ -25,6 +25,17 @@ rules:
   - action: action_set_height
   - action: action_set_weight
   - action: action_calculate_bmi
+#   - active_loop: management_form
+
+# - rule: management 
+#   condition: 
+#   - active_loop: management_form
+#   steps: 
+#   - action: management_form
+#   - slot_was_set: 
+#     - requested_slot: null 
+#   - active_loop: null 
+#   - action: 
 
 
 

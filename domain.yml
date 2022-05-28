@@ -49,24 +49,30 @@ slots:
     mappings:
     - type: from_intent
       # value: Man
-      value: 0
+      value: '0'
       intent: Man
     - type: from_intent
       # value: Woman
-      value: 1
+      value: '1'
       intent: Woman
     values: []
+
+  # gender:
+  #   type: actions.my_custom_slots.genderfloat
+  #   influence_conversation: true
+  #   mappings:
+  #   - type: custom
   alco:
     type: categorical
     influence_conversation: true
     mappings:
     - type: from_intent
       # value: alco_affirm
-      value: 1
+      value: '1'
       intent: affirm_a
     - type: from_intent
       # value: alco_deny
-      value: 0
+      value: '0'
       intent: deny_a
     values: []
   age:
@@ -86,11 +92,11 @@ slots:
     mappings:
     - type: from_intent
       # value: smoke_affirm
-      value: 1
+      value: '1'
       intent: affirm_s
     - type: from_intent
       # value: smoke_deny
-      value: 0
+      value: '0'
       intent: deny_s
     values: []
   daily_activity:
@@ -99,11 +105,11 @@ slots:
     mappings:
     - type: from_intent
       # value: pe_affirm
-      value: 1
+      value: '1'
       intent: affirm_pe
     - type: from_intent
       # value: pe_deny
-      value: 0
+      value: '0'
       intent: deny_pe
     values: []
   height:
@@ -221,7 +227,7 @@ responses:
   utter_chitchat:
   - text: say default
   utter_slots_values:
-  - text: "Here are your answers:\n{age}\n{alco}\n{smoke}\n{daily_activity}\n{height}\n{weight}"
+  - text: "Here are your answers:\n{gender}\n{age}\n{alco}\n{smoke}\n{daily_activity}\n{height}\n{weight}"
   # utter_inform_bmi: 
   # - text: It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk. 
   utter_ask_manageweight:
