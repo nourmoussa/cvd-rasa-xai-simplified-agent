@@ -48,30 +48,20 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      # value: Man
       value: '0'
       intent: Man
     - type: from_intent
-      # value: Woman
       value: '1'
       intent: Woman
     values: []
-
-  # gender:
-  #   type: actions.my_custom_slots.genderfloat
-  #   influence_conversation: true
-  #   mappings:
-  #   - type: custom
   alco:
     type: categorical
     influence_conversation: true
     mappings:
     - type: from_intent
-      # value: alco_affirm
       value: '1'
       intent: affirm_a
     - type: from_intent
-      # value: alco_deny
       value: '0'
       intent: deny_a
     values: []
@@ -91,11 +81,9 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      # value: smoke_affirm
       value: '1'
       intent: affirm_s
     - type: from_intent
-      # value: smoke_deny
       value: '0'
       intent: deny_s
     values: []
@@ -104,11 +92,9 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_intent
-      # value: pe_affirm
       value: '1'
       intent: affirm_pe
     - type: from_intent
-      # value: pe_deny
       value: '0'
       intent: deny_pe
     values: []
@@ -184,7 +170,7 @@ responses:
   utter_submit_risk:
   - text: Thank you, I will use your inputs to calculate your cardiovascular risk.
   utter_ask_bmi:
-  - text: Your body mass index is a function of your weight and height. Are you interested in knowing which BMI classification percentile you fall into? 
+  - text: Your body mass index is a function of your weight and height. Are you interested in knowing which BMI classification percentile you fall into?
   utter_ask_continue:
   - text: Are you sure you want to stop the form?
   utter_welcome_name:
@@ -208,16 +194,6 @@ responses:
   - text: Bye
   utter_iamabot:
   - text: I am a bot, powered by Rasa.
-  utter_mynameis_Asthma:
-  - text: I am currently called Asthma Shield, but this is likely to change. I have been created by a team at Imperial College London, with funding from the EPSRC
-  utter_unhappy_reflect:
-  - text: So you have been unwell
-  utter_ask_why:
-  - text: Could you tell me why you feel this way?
-  utter_ask_strategy_unhappy:
-  - text: Do you have strategies for helping with this?
-  utter_offer_strategy_resources:
-  - text: Would you like some help finding better strategies?
   utter_will_seek_help:
   - text: Sorry, I am not yet able to offer help on this. But in the meantime you can find great resources at https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)
   utter_default:
@@ -227,26 +203,37 @@ responses:
   utter_chitchat:
   - text: say default
   utter_slots_values:
-  - text: "Here are your answers:\n{gender}\n{age}\n{alco}\n{smoke}\n{daily_activity}\n{height}\n{weight}"
-  # utter_inform_bmi: 
-  # - text: It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk. 
+  - text: |-
+      Here are your answers:
+      {gender}
+      {age}
+      {alco}
+      {smoke}
+      {daily_activity}
+      {height}
+      {weight}
+  utter_inform_bmi:
+  - text: It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk.
   utter_ask_manageweight:
   - text: Making changes to what you eat and drink can have a significant effect on your weight, and therefore your cardiovascular risk. Do you want to learn more about the best tips recommended by the NHS to maintain a healthy weight?
   utter_manageweight1:
   - text: As a first step, I would recommend not skipping breakfast. In fact, you could miss out on essential nutrients and you may end up snacking more throughout the day because you feel hungry.
+  utter_learnmore:
+  - text: If you find this helpful, please let me know if you would like me to proceed with further management tips.
   utter_manageweight2:
-  - text: Small changes (like swapping sugary drinks for water or ditching sugar from your tea) can make a big difference in the long term. If you are interested, you can download thee free NHS plan using this link https://www.nhs.uk/better-health/lose-weight/
+  - text: I would also recomment small changes (like swapping sugary drinks for water or ditching sugar from your tea) can make a big difference in the long term. If you are interested, you can download thee free NHS plan using this link https://www.nhs.uk/better-health/lose-weight/
   utter_managesmoke:
   - text: xxx
   utter_manageactive:
   - text: xxx
-  utter_ask_managealco: 
+  utter_ask_managealco:
   - text: Consuming alcohol can be enjoyable on a night out, but be mindful of your consumption. Are you interested to know how your alcohol consumption affects your cardiovascular risk?
   utter_managealco1:
   - text: A standard glass of wine can contain as many calories as a piece of chocolate. Over time, drinking too much can easily contribute to weight gain, which has been shown to increase your risk of morbidities associated to cardiovascular disease. If interested here is a comparison between the calorie contents of different drinks https://www.nhs.uk/live-well/alcohol-advice/calories-in-alcohol/
   utter_managealco2:
   - text: Men and women are advised to not regularly drink more than 14 units a week. One tip I could suggest is to alternate an alcoholic drink with a glass of water to prevent you becoming dehydrated.
-
+  utter_link:
+  - text: Please click this link [Google Website](http://127.0.0.1:7001/).
 actions:
 - risk_assessment
 - risk_management
@@ -254,7 +241,7 @@ actions:
 - action_set_weight
 - action_calculate_bmi
 - action_risk_assessment
-
+- action_explain_risk
 forms:
   simple_risk_form:
     required_slots:

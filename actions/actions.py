@@ -36,6 +36,9 @@ import requests
 import json
 import shap
 from interpret import show
+import joblib
+from interpret import set_visualize_provider
+from interpret.provider import DashProvider
 
 # This will be replaced with a representation of risks for different slot values
 # todo: should include text for naming, is it addressable, and map to a live domain (to connect to a motivation type)
@@ -81,31 +84,67 @@ class RiskAssessment(Action):
 
         try:
             url = 'http://127.0.0.1:5000'
-            payload = json.dumps({
-                # "age": int(tracker.get_slot("age")),
-                "age":tracker.get_slot("age"),
-                "gender": float(tracker.get_slot("gender")),
-                "height": tracker.get_slot("height"),
-                "weight": tracker.get_slot("weight"),
-                "smoke": float(tracker.get_slot("smoke")),
-                "alco": float(tracker.get_slot("alco")),
-                "active": float(tracker.get_slot("daily_activity"))
-                })
-            headers = {
-                'Content-Type': 'application/json'
-            }
-
-            response = requests.request("POST", url, headers=headers, data=payload)
-            result=response.json()
-            if result["result"]==1:
+            # url = 'https://heroku-app-cvd.herokuapp.com/'
+            # payload = json.dumps({
+            #     # "age": int(tracker.get_slot("age")),
+            #     "age":tracker.get_slot("age"),
+            #     "gender": float(tracker.get_slot("gender")),
+            #     "height": tracker.get_slot("height"),
+            #     "weight": tracker.get_slot("weight"),
+            #     "smoke": float(tracker.get_slot("smoke")),
+            #     "alco": float(tracker.get_slot("alco")),
+            #     "active": float(tracker.get_slot("daily_activity"))
+            #     })
+            # headers = {
+            #     'Content-Type': 'application/json'
+            # }
+            model = joblib.load('actions/reg_1.pkl')
+            prediction = model.predict([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
+            output = prediction[0]
+            # response = requests.request("POST", url, headers=headers, data=payload)
+            # result=response.json()
+            # if result["result"]==1:
+            #     dispatcher.utter_message(text="cvd risk")
+            # elif result["result"] == 0:
+            #     dispatcher.utter_message(text="no cvd")  
+            if output==1:
                 dispatcher.utter_message(text="cvd risk")
-            elif result["result"] == 0:
-                dispatcher.utter_message(text="no cvd")  
+            elif output == 0:
+                dispatcher.utter_message(text="no cvd")             
             
         except: 
             dispatcher.utter_message(text="error")
             return []
 
+
+class ExplainRisk(Action):
+
+    def name(self) -> Text:
+        return "action_explain_risk"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        model = joblib.load('actions/reg_1.pkl')
+        prediction = model.predict([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
+
+        # Take the first value of prediction
+
+        output = prediction[0]
+
+        lr_local = model.explain_local([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
+
+        show(lr_local)
+
+        dispatcher.utter_message(text=str(output))
+
+        dispatcher.utter_message(text=str(output))  
+
+        set_visualize_provider(DashProvider.from_address(('127.0.0.1', 7001)))
+
+        # webbrowser.open('http://127.0.0.1:7001/')
+            
 
 # lr_local = lr.explain_local(X_test[:100], y_test[:100], name='Logistic Regression')
 # show(lr_local)

@@ -9,6 +9,25 @@ rules:
   - action: simple_risk_form
   - active_loop: simple_risk_form
 
+# - rule: Elicitation form
+#   condition:
+#   - active_loop: simple_risk_form
+#   steps:
+#   - action: simple_risk_form
+#   - slot_was_set: 
+#     - requested_slot: null
+#   - active_loop: null
+#   - action: utter_slots_values
+#   - action: action_risk_assessment
+#   - action: utter_submit_risk
+#   - action: utter_ask_bmi
+#   - intent: affirm
+#   - action: action_set_height
+#   - action: action_set_weight
+#   - action: action_calculate_bmi
+#   - action: utter_inform_bmi
+
+
 - rule: Elicitation form
   condition:
   - active_loop: simple_risk_form
@@ -19,12 +38,26 @@ rules:
   - active_loop: null
   - action: utter_slots_values
   - action: action_risk_assessment
+  - action: utter_link
   - action: utter_submit_risk
   - action: utter_ask_bmi
   - intent: affirm
   - action: action_set_height
   - action: action_set_weight
   - action: action_calculate_bmi
+  - action: utter_inform_bmi
+
+# bd30Mr_xiIO8WQ4kXmv1m3aVdmQY0XzdhDpwMqG2
+  # management
+  # - action: utter_wants_manage
+  # - intent: affirm
+  # - action: utter_ask_manageweight
+  # - intent: affirm
+  # - action: utter_manageweight1
+  # - action: utter_learnmore
+  # - intent: affirm
+  # - action: utter_manageweight2
+ 
 #   - active_loop: management_form
 
 # - rule: management 
@@ -36,6 +69,7 @@ rules:
 #     - requested_slot: null 
 #   - active_loop: null 
 #   - action: 
+  
 
 
 
