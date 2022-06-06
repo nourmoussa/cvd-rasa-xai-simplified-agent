@@ -1,7 +1,6 @@
 version: "3.1"
 
 nlu:
-# Asthma Risk calculation
 - intent: risk_assess
   examples: |
     - risk
@@ -20,10 +19,6 @@ nlu:
     - I have/have had trouble (breathing)[health]
     - I would like to remember to take the [preventer](health)
 
-#- intent: inform_focusing  
-#   examples:|
-#     - I'd like to reduce my [risk](motivation) of [asthma](health)
-#     - 
 
 - intent: say_name
 # eventually generalise with Spacy https://learning.rasa.com/conversational-ai-with-rasa/entities/

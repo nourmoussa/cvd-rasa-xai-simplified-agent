@@ -40,35 +40,6 @@ import joblib
 from interpret import set_visualize_provider
 from interpret.provider import DashProvider
 
-# This will be replaced with a representation of risks for different slot values
-# todo: should include text for naming, is it addressable, and map to a live domain (to connect to a motivation type)
-# This db is the knowledge base for risk factors a person may have, and if and how they can be addressed
- # Answers to the assessment questions (slots) provide the specific situation of an individual
- # 
- # The key is the risk factor label
- # The value should probably be a type dict, rather than array.   
- # factor_slot: [slot_name, risk_values, factor_explain, factor_type, factor_mot] 
- # 0 - slot_name: required slots in assessment form (and load in buttons)
- # 1 - risk_values: how much the attribute adds to the total risk
- # 2 - factor_explain: text to explain what the factor means
- # 3 - factor_type can be fixed, environmental, behavioural, management   
- # 4 - factor_mot: motivation category driving this factor - to be used to find relationships/groups
- # 5 - factor_resource: suggestiomn to read resource to reduce risk (only for )
-
-# this knowledge base reflects prediction and management variables
-# risk_db = {
-#     "Man": ["gender",0.5, "Man", "fixed", ""],  # fix
-#     "Woman": ["gender", 1.0, "Woman", "fixed", ""],
-#     # "diagnosed_under_6months": ["age",1.0, "having been diagnosed under 6 months ago", "fixed", ""],
-#     # "diagnosed_over_6months": ["age", 1.0, "having been diagnosed over 6 months ago", "fixed", ""],
-#     "affirm_a": ["alco",1.0, "Drinking alcohol", "fixed", ""],
-#     "deny_a": ["alco",0.0, "Not drinking alcohol", "fixed", ""],
-#     "deny_s": ["smoke", 0.0, "smoking", "fixed", ""],
-#     "affirm_s": ["smoke",1.0, "not smoking", "fixed", ""],
-#     "affirm_pe": ["daily_activity", 0.3, "interferring with daily activity", "fixed", ""],
-#     "deny_pe": ["daily_activity", 0.0, "not interferring with daily activity", "fixed", ""]
-# }
-
 sleep_time = 0.5 # not woking when in loop, it flushes all messages together
 
 factor_slots = ["gender", "alco", "age", "smoke", "daily_activity", "height", "weight"]
@@ -117,33 +88,33 @@ class RiskAssessment(Action):
             return []
 
 
-class ExplainRisk(Action):
+# class ExplainRisk(Action):
 
-    def name(self) -> Text:
-        return "action_explain_risk"
+#     def name(self) -> Text:
+#         return "action_explain_risk"
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+#     def run(self, dispatcher: CollectingDispatcher,
+#             tracker: Tracker,
+#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        model = joblib.load('actions/reg_1.pkl')
-        prediction = model.predict([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
+#         model = joblib.load('actions/reg_1.pkl')
+#         prediction = model.predict([[int(tracker.get_slot("age")),int(tracker.get_slot("gender")),int(tracker.get_slot("height")),int(tracker.get_slot("weight")),int(tracker.get_slot("alco")),int(tracker.get_slot("smoke")),int(tracker.get_slot("daily_activity"))]])
 
-        # Take the first value of prediction
+#         # Take the first value of prediction
 
-        output = prediction[0]
+#         output = prediction[0]
 
-        lr_local = model.explain_local([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
+#         lr_local = model.explain_local([[int(tracker.get_slot("age")),0,168,62,0,1,1]])
 
-        show(lr_local)
+#         show(lr_local)
 
-        dispatcher.utter_message(text=str(output))
+#         dispatcher.utter_message(text=str(output))
 
-        dispatcher.utter_message(text=str(output))  
+#         dispatcher.utter_message(text=str(output))  
 
-        set_visualize_provider(DashProvider.from_address(('127.0.0.1', 7001)))
+#         set_visualize_provider(DashProvider.from_address(('127.0.0.1', 7001)))
 
-        # webbrowser.open('http://127.0.0.1:7001/')
+#         # webbrowser.open('http://127.0.0.1:7001/')
             
 
 # lr_local = lr.explain_local(X_test[:100], y_test[:100], name='Logistic Regression')
@@ -222,32 +193,51 @@ def slow_response (msg, dispatcher: CollectingDispatcher):
 class ActionReceiveAge(Action):
     def name(self) -> Text:
         return "action_set_age"
-
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
         age = tracker.latest_message['age']
-
         dispatcher.utter_message(text="Your age is {age}")
         #return [SlotSet("age")]
         return[]
+
+class ActionReceiveAlco(Action):
+    def name(self) -> Text:
+        return "action_set_alco"
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        try:
+           tracker.get_slot("alco")
+        except:
+            dispatcher.utter_message(text="Error Occur!")
+        dispatcher.utter_message(text="Alcohol consumption status set")
+        return []
+class ActionReceivesSmoke(Action):
+    def name(self) -> Text:
+        return "action_set_smoke"
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        try:
+           tracker.get_slot("smoke")
+        except:
+            dispatcher.utter_message(text="Error Occur!")
+        dispatcher.utter_message(text="Smoking status set")
+        return []
+
 
 #BMI
 class WeightSET(Action):
     def name(self) -> Text:
         return "action_set_weight"
-
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
         try:
-       
            tracker.get_slot("weight")
         except:
             dispatcher.utter_message(text="Error Occur!")
-
         dispatcher.utter_message(text="Weight set")
         return []
         #return [SlotSet("weight", weight)]
@@ -286,8 +276,6 @@ def get_bmi_status(bmi):
         return "Unfortunately, you fall into the overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
     elif bmi>= 30 and bmi <35:
         return "Unfortunately, you fall into the moderately obese percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
-    # elif bmi >= 35 and bmi <40:
-    #     return "Unfortunately, you fall into the severely overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
     else:
         return "Unfortunately, you fall into the severely overweight percentile. It is important to focus on factors you can control, such as weight. Weight gain increases blood pressure, insulin resistance and cholesterol, which affect the CVD risk."
 
